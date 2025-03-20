@@ -1,0 +1,181 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 47% 11%;
+    --foreground: 0 0% 100%;
+
+    --card: 217 33% 17%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 217 33% 17%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 210 100% 67%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 20% 20%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 240 5% 65%;
+    --muted-foreground: 215 20% 75%;
+
+    --accent: 210 100% 67%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 215 27% 23%;
+    --input: 215 27% 23%;
+    --ring: 210 100% 67%;
+
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-study-darker text-foreground;
+    font-feature-settings: "ss01", "ss02";
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    @apply bg-study-card/90 backdrop-blur-sm border border-white/10 transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply bg-study-card-hover/90;
+  }
+  
+  .progress-bar {
+    @apply h-1.5 rounded-full bg-study-blue transition-all duration-300 ease-out;
+  }
+  
+  .progress-bar-bg {
+    @apply h-1.5 w-full rounded-full bg-white/10;
+  }
+  
+  .focus-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+}
+
+/* Animation for page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Study subjects gradient borders */
+.subject-physics {
+  @apply border-2 border-study-physics;
+  background: linear-gradient(to bottom, rgba(30, 41, 59, 0.3), rgba(30, 41, 59, 0.1));
+}
+
+.subject-chemistry {
+  @apply border-2 border-study-chemistry;
+  background: linear-gradient(to bottom, rgba(16, 60, 50, 0.3), rgba(16, 60, 50, 0.1));
+}
+
+.subject-biology {
+  @apply border-2 border-study-biology;
+  background: linear-gradient(to bottom, rgba(59, 37, 6, 0.3), rgba(59, 37, 6, 0.1));
+}
+
+.subject-math {
+  @apply border-2 border-study-math;
+  background: linear-gradient(to bottom, rgba(58, 13, 57, 0.3), rgba(58, 13, 57, 0.1));
+}
+
+/* New subject colors */
+.subject-literature {
+  @apply border-2 border-orange-500;
+  background: linear-gradient(to bottom, rgba(234, 88, 12, 0.3), rgba(234, 88, 12, 0.1));
+}
+
+.subject-history {
+  @apply border-2 border-red-500;
+  background: linear-gradient(to bottom, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
+}
+
+.subject-geography {
+  @apply border-2 border-teal-500;
+  background: linear-gradient(to bottom, rgba(20, 184, 166, 0.3), rgba(20, 184, 166, 0.1));
+}
+
+.subject-art {
+  @apply border-2 border-pink-500;
+  background: linear-gradient(to bottom, rgba(236, 72, 153, 0.3), rgba(236, 72, 153, 0.1));
+}
+
+.subject-music {
+  @apply border-2 border-yellow-500;
+  background: linear-gradient(to bottom, rgba(234, 179, 8, 0.3), rgba(234, 179, 8, 0.1));
+}
+
+.subject-coding {
+  @apply border-2 border-cyan-500;
+  background: linear-gradient(to bottom, rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.1));
+}
+
+/* Timer progress circle */
+.circular-progress {
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
