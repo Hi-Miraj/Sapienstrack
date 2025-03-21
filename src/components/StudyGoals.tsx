@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, Target, Plus, Pencil, Trash2 } from 'lucide-rea
 import { getGoals, StudyGoal, getSubjectById, deleteGoal } from '@/utils/storageUtils';
 import AddGoalModal from './AddGoalModal';
 import { toast } from 'sonner';
+import FloatingEditButton from './FloatingEditButton';
 
 interface StudyGoalsProps {
   onRefreshNeeded: boolean;
@@ -18,6 +19,7 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
   const [goals, setGoals] = useState<StudyGoal[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingGoal, setEditingGoal] = useState<StudyGoal | null>(null);
+  const [showFloatingButton, setShowFloatingButton] = useState(false);
 
   // Load goals from storage
   useEffect(() => {
@@ -29,6 +31,11 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
 
     loadGoals();
   }, [onRefreshNeeded, onRefreshComplete]);
+
+  // Show/hide floating button based on expansion state
+  useEffect(() => {
+    setShowFloatingButton(isExpanded);
+  }, [isExpanded]);
 
   // Calculate progress percentage
   const calculateProgress = (goal: StudyGoal) => {
@@ -60,7 +67,7 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
   };
 
   return (
-    <div className="glass-card rounded-md overflow-hidden animate-fade-in">
+    <div className="glass-card rounded-md overflow-hidden animate-fade-in relative">
       {/* Header */}
       <div 
         className="flex justify-between items-center px-4 py-3 cursor-pointer"
@@ -89,7 +96,7 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
               const isCompleted = isGoalCompleted(goal);
               
               return (
-                <div key={goal.id} className="space-y-1 relative group">
+                <div key={goal.id} className="space-y-1 relative">
                   <div className="flex justify-between items-center">
                     <div className="text-white">
                       {subject?.name || 'Unknown Subject'}
@@ -97,19 +104,19 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
                         {goal.targetHours} hours {goal.weeklyTarget ? 'weekly' : 'total'}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-2">
                       {isCompleted ? (
                         <span className="text-xs bg-study-completed text-white px-2 py-0.5 rounded-full">
                           Completed
                         </span>
                       ) : (
-                        <span className="text-white/70 text-sm mr-2">
+                        <span className="text-white/70 text-sm">
                           {Math.round(progress)}%
                         </span>
                       )}
                       
-                      {/* Edit and delete controls - now positioned next to percentage */}
-                      <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      {/* Edit and delete controls - Better placement and always visible */}
+                      <div className="flex space-x-1">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
@@ -165,6 +172,17 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
             <span>Add New Goal</span>
           </button>
         </div>
+      )}
+
+      {/* Floating add button for quick access */}
+      {showFloatingButton && (
+        <FloatingEditButton 
+          onClick={() => {
+            setEditingGoal(null);
+            setIsAddModalOpen(true);
+          }}
+          label="Add Goal"
+        />
       )}
 
       {/* Add/Edit goal modal */}
