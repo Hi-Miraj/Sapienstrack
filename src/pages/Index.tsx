@@ -137,7 +137,7 @@ const Index = () => {
           {/* Social Links */}
           <div className="flex justify-center items-center space-x-6 mb-4">
             <a 
-              href="https://linkedin.com/in/yourusername" 
+              href="https://www.linkedin.com/in/mirajshafek/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-blue-400 transition-colors"
@@ -155,7 +155,7 @@ const Index = () => {
               <Github size={20} />
             </a>
             <a 
-              href="https://instagram.com/yourusername" 
+              href="https://www.instagram.com/miraj_shafek/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-pink-400 transition-colors"
@@ -164,7 +164,7 @@ const Index = () => {
               <Instagram size={20} />
             </a>
             <a 
-              href="https://youtube.com/c/yourusername" 
+              href="https://www.youtube.com/@Hi-Miraj" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-red-500 transition-colors"
@@ -173,7 +173,7 @@ const Index = () => {
               <Youtube size={20} />
             </a>
             <a 
-              href="https://twitter.com/yourusername" 
+              href="https://x.com/MirajShafek" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-white/70 hover:text-blue-400 transition-colors"
