@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Target, Plus } from 'lucide-react';
-import { getGoals, StudyGoal, getSubjectById } from '@/utils/storageUtils';
+import { ChevronDown, ChevronUp, Target, Plus, Pencil, Trash2 } from 'lucide-react';
+import { getGoals, StudyGoal, getSubjectById, deleteGoal } from '@/utils/storageUtils';
 import AddGoalModal from './AddGoalModal';
+import { toast } from 'sonner';
 
 interface StudyGoalsProps {
   onRefreshNeeded: boolean;
@@ -16,6 +17,7 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
   const [isExpanded, setIsExpanded] = useState(true);
   const [goals, setGoals] = useState<StudyGoal[]>([]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingGoal, setEditingGoal] = useState<StudyGoal | null>(null);
 
   // Load goals from storage
   useEffect(() => {
@@ -45,9 +47,16 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
     return goal.completedMinutes >= goal.targetHours * 60;
   };
 
-  // Handle goal added
+  // Handle goal added or updated
   const handleGoalAdded = () => {
     setGoals(getGoals());
+  };
+
+  // Handle goal deletion
+  const handleDeleteGoal = (goalId: string) => {
+    deleteGoal(goalId);
+    setGoals(goals.filter(goal => goal.id !== goalId));
+    toast.success("Goal deleted successfully");
   };
 
   return (
@@ -80,7 +89,7 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
               const isCompleted = isGoalCompleted(goal);
               
               return (
-                <div key={goal.id} className="space-y-1">
+                <div key={goal.id} className="space-y-1 relative group">
                   <div className="flex justify-between">
                     <div className="text-white">
                       {subject?.name || 'Unknown Subject'}
@@ -110,6 +119,31 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
                   <div className="text-xs text-white/60">
                     {formatCompletedTime(goal.completedMinutes, goal.targetHours)}
                   </div>
+
+                  {/* Edit and delete controls that appear on hover */}
+                  <div className="absolute right-0 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setEditingGoal(goal);
+                        setIsAddModalOpen(true);
+                      }}
+                      className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
+                      title="Edit goal"
+                    >
+                      <Pencil size={14} />
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteGoal(goal.id);
+                      }}
+                      className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
+                      title="Delete goal"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               );
             })
@@ -117,7 +151,10 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
           
           {/* Add new goal button */}
           <button 
-            onClick={() => setIsAddModalOpen(true)}
+            onClick={() => {
+              setEditingGoal(null);
+              setIsAddModalOpen(true);
+            }}
             className="w-full py-2 mt-2 rounded border border-dashed border-white/20 
               flex items-center justify-center space-x-2 text-white/60 hover:text-white 
               hover:border-white/30 focus-transition"
@@ -128,11 +165,15 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
         </div>
       )}
 
-      {/* Add goal modal */}
+      {/* Add/Edit goal modal */}
       <AddGoalModal
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setEditingGoal(null);
+        }}
         onGoalAdded={handleGoalAdded}
+        editGoal={editingGoal}
       />
     </div>
   );
