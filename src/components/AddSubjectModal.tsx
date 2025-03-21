@@ -1,15 +1,17 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { addSubject, Subject } from '@/utils/storageUtils';
+import { addSubject, Subject, updateSubject } from '@/utils/storageUtils';
 import { Check, X } from 'lucide-react';
 
 interface AddSubjectModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubjectAdded: (subject: Subject) => void;
+  onSubjectUpdated?: (subject: Subject) => void;
+  editSubject: Subject | null;
 }
 
 const COLORS = [
@@ -29,21 +31,50 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   isOpen,
   onClose,
   onSubjectAdded,
+  onSubjectUpdated,
+  editSubject,
 }) => {
   const [subjectName, setSubjectName] = useState('');
   const [selectedColor, setSelectedColor] = useState(COLORS[0].class);
+  const isEditing = !!editSubject;
+
+  // Set initial values when editing
+  useEffect(() => {
+    if (editSubject) {
+      setSubjectName(editSubject.name);
+      setSelectedColor(editSubject.color);
+    } else {
+      // Reset to defaults for new subjects
+      setSubjectName('');
+      setSelectedColor(COLORS[0].class);
+    }
+  }, [editSubject, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!subjectName.trim()) return;
     
-    const newSubject = addSubject({
-      name: subjectName.trim(),
-      color: selectedColor,
-    });
-    
-    onSubjectAdded(newSubject);
+    if (isEditing && editSubject) {
+      // Update existing subject
+      const updatedSubject = updateSubject({
+        id: editSubject.id,
+        name: subjectName.trim(),
+        color: selectedColor,
+      });
+      
+      if (onSubjectUpdated) {
+        onSubjectUpdated(updatedSubject);
+      }
+    } else {
+      // Add new subject
+      const newSubject = addSubject({
+        name: subjectName.trim(),
+        color: selectedColor,
+      });
+      
+      onSubjectAdded(newSubject);
+    }
     
     // Reset form
     setSubjectName('');
@@ -55,7 +86,9 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="glass-card border-white/10 sm:max-w-md animate-scale-in">
         <DialogHeader>
-          <DialogTitle className="text-xl font-light">Add New Subject</DialogTitle>
+          <DialogTitle className="text-xl font-light">
+            {isEditing ? 'Edit Subject' : 'Add New Subject'}
+          </DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
@@ -107,7 +140,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
               className="bg-study-blue hover:bg-study-blue/90"
               disabled={!subjectName.trim()}
             >
-              Add Subject
+              {isEditing ? 'Update Subject' : 'Add Subject'}
             </Button>
           </DialogFooter>
         </form>

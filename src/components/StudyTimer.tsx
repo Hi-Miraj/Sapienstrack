@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { formatTime, getProgressPercentage } from '@/utils/timerUtils';
 import CircularTimer from '@/components/CircularTimer';
 import { Play, Pause, RefreshCw, Settings2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { addSession } from '@/utils/storageUtils';
+import { addSession, getSubjectById } from '@/utils/storageUtils';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -211,6 +210,13 @@ const StudyTimer: React.FC<StudyTimerProps> = ({
     toast.success("Timer settings updated");
   };
 
+  // Get selected subject name for display
+  const getSelectedSubjectName = useCallback(() => {
+    if (!selectedSubject) return '';
+    const subject = getSubjectById(selectedSubject);
+    return subject?.name || '';
+  }, [selectedSubject]);
+
   return (
     <div className="flex flex-col items-center justify-center space-y-6">
       {/* Timer type selector */}
@@ -267,7 +273,7 @@ const StudyTimer: React.FC<StudyTimerProps> = ({
           {/* Show current mode */}
           <div className="mt-1 text-xs font-medium px-2 py-0.5 rounded-full bg-white/10 text-white/80">
             {timerMode === 'focus' ? 
-              (selectedSubject ? `Studying ${selectedSubject}` : 'Focus Time') : 
+              (selectedSubject ? `Studying ${getSelectedSubjectName()}` : 'Focus Time') : 
               timerMode === 'shortBreak' ? 'Short Break' : 'Long Break'
             }
           </div>

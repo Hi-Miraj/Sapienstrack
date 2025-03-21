@@ -1,4 +1,3 @@
-
 // Types for our data structures
 export interface Subject {
   id: string;
@@ -61,12 +60,34 @@ export const saveSubjects = (subjects: Subject[]): void => {
 export const addSubject = (subject: Omit<Subject, 'id'>): Subject => {
   const newSubject = {
     ...subject,
-    id: Date.now().toString(),
+    id: generateSubjectId(subject.name),
   };
   
   const subjects = getSubjects();
   saveSubjects([...subjects, newSubject]);
   return newSubject;
+};
+
+// Generate a clean subject ID from name
+const generateSubjectId = (name: string): string => {
+  // Create a clean, URL-friendly ID from the subject name
+  return name.toLowerCase()
+    .replace(/[^a-z0-9]/g, '-') // Replace non-alphanumeric with dashes
+    .replace(/-+/g, '-')        // Replace multiple dashes with single dash
+    .replace(/^-|-$/g, '')      // Remove leading/trailing dashes
+    .substring(0, 30)           // Limit length
+    + '-' + Date.now().toString().slice(-4); // Add timestamp suffix for uniqueness
+};
+
+// Update an existing subject
+export const updateSubject = (subject: Subject): Subject => {
+  const subjects = getSubjects();
+  const updatedSubjects = subjects.map(s => 
+    s.id === subject.id ? subject : s
+  );
+  
+  saveSubjects(updatedSubjects);
+  return subject;
 };
 
 // Get/Save Goals
