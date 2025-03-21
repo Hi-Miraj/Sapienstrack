@@ -90,22 +90,49 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
               
               return (
                 <div key={goal.id} className="space-y-1 relative group">
-                  <div className="flex justify-between">
+                  <div className="flex justify-between items-center">
                     <div className="text-white">
                       {subject?.name || 'Unknown Subject'}
                       <span className="ml-2 text-sm text-white/60">
                         {goal.targetHours} hours {goal.weeklyTarget ? 'weekly' : 'total'}
                       </span>
                     </div>
-                    {isCompleted ? (
-                      <span className="text-xs bg-study-completed text-white px-2 py-0.5 rounded-full">
-                        Completed
-                      </span>
-                    ) : (
-                      <span className="text-white/70 text-sm">
-                        {Math.round(progress)}%
-                      </span>
-                    )}
+                    <div className="flex items-center space-x-1">
+                      {isCompleted ? (
+                        <span className="text-xs bg-study-completed text-white px-2 py-0.5 rounded-full">
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="text-white/70 text-sm mr-2">
+                          {Math.round(progress)}%
+                        </span>
+                      )}
+                      
+                      {/* Edit and delete controls - now positioned next to percentage */}
+                      <div className="flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingGoal(goal);
+                            setIsAddModalOpen(true);
+                          }}
+                          className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
+                          title="Edit goal"
+                        >
+                          <Pencil size={14} />
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteGoal(goal.id);
+                          }}
+                          className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
+                          title="Delete goal"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   
                   {/* Progress bar */}
@@ -118,31 +145,6 @@ const StudyGoals: React.FC<StudyGoalsProps> = ({
                   
                   <div className="text-xs text-white/60">
                     {formatCompletedTime(goal.completedMinutes, goal.targetHours)}
-                  </div>
-
-                  {/* Edit and delete controls that appear on hover */}
-                  <div className="absolute right-0 top-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setEditingGoal(goal);
-                        setIsAddModalOpen(true);
-                      }}
-                      className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
-                      title="Edit goal"
-                    >
-                      <Pencil size={14} />
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteGoal(goal.id);
-                      }}
-                      className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
-                      title="Delete goal"
-                    >
-                      <Trash2 size={14} />
-                    </button>
                   </div>
                 </div>
               );
