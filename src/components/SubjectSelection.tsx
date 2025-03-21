@@ -68,8 +68,7 @@ const SubjectSelection: React.FC<SubjectSelectionProps> = ({
           >
             <button
               onClick={() => onSelectSubject(subject.id)}
-              className={`subject-${subject.id} w-full rounded-md py-4 px-2 focus-transition
-                ${subject.color ? subject.color : ''}
+              className={`w-full rounded-md py-4 px-2 focus-transition ${subject.color} 
                 ${selectedSubject === subject.id ? 'ring-2 ring-study-blue' : ''}
               `}
             >

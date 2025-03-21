@@ -14,17 +14,18 @@ interface AddSubjectModalProps {
   editSubject: Subject | null;
 }
 
+// Updated to make color selection more explicit
 const COLORS = [
-  { id: 'physics', name: 'Blue', class: 'study-physics' },
-  { id: 'chemistry', name: 'Green', class: 'study-chemistry' },
-  { id: 'biology', name: 'Brown', class: 'study-biology' },
-  { id: 'math', name: 'Purple', class: 'study-math' },
-  { id: 'literature', name: 'Orange', class: 'study-literature' },
-  { id: 'history', name: 'Red', class: 'study-history' },
-  { id: 'geography', name: 'Teal', class: 'study-geography' },
-  { id: 'art', name: 'Pink', class: 'study-art' },
-  { id: 'music', name: 'Yellow', class: 'study-music' },
-  { id: 'coding', name: 'Cyan', class: 'study-coding' },
+  { id: 'physics', name: 'Blue', class: 'subject-physics' },
+  { id: 'chemistry', name: 'Green', class: 'subject-chemistry' },
+  { id: 'biology', name: 'Brown', class: 'subject-biology' },
+  { id: 'math', name: 'Purple', class: 'subject-math' },
+  { id: 'literature', name: 'Orange', class: 'subject-literature' },
+  { id: 'history', name: 'Red', class: 'subject-history' },
+  { id: 'geography', name: 'Teal', class: 'subject-geography' },
+  { id: 'art', name: 'Pink', class: 'subject-art' },
+  { id: 'music', name: 'Yellow', class: 'subject-music' },
+  { id: 'coding', name: 'Cyan', class: 'subject-coding' },
 ];
 
 const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
@@ -42,7 +43,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
   useEffect(() => {
     if (editSubject) {
       setSubjectName(editSubject.name);
-      setSelectedColor(editSubject.color);
+      setSelectedColor(editSubject.color || COLORS[0].class); // Ensure a fallback if color is undefined
     } else {
       // Reset to defaults for new subjects
       setSubjectName('');
@@ -114,7 +115,7 @@ const AddSubjectModal: React.FC<AddSubjectModalProps> = ({
                   key={color.id}
                   type="button"
                   onClick={() => setSelectedColor(color.class)}
-                  className={`subject-${color.id} w-10 h-10 rounded-full flex items-center justify-center
+                  className={`${color.class} w-10 h-10 rounded-full flex items-center justify-center
                     transition-all duration-200 ${
                       selectedColor === color.class ? 'ring-2 ring-white' : 'ring-1 ring-white/30'
                     }`}
