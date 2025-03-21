@@ -1,3 +1,4 @@
+
 import { v4 as uuidv4 } from 'uuid';
 
 export interface Subject {
@@ -13,6 +14,13 @@ export interface StudyGoal {
   completedMinutes: number;
   weeklyTarget: boolean;
   createdAt: number;
+}
+
+export interface StudySession {
+  id: string;
+  subjectId: string;
+  date: number;
+  durationMinutes: number;
 }
 
 // Subjects
@@ -33,12 +41,13 @@ export const addSubject = (subject: Omit<Subject, 'id'>): Subject => {
   return newSubject;
 };
 
-export const updateSubject = (updatedSubject: Subject): void => {
+export const updateSubject = (updatedSubject: Subject): Subject => {
   const subjects = getSubjects();
   const updatedSubjects = subjects.map(subject => 
     subject.id === updatedSubject.id ? updatedSubject : subject
   );
   localStorage.setItem('subjects', JSON.stringify(updatedSubjects));
+  return updatedSubject;
 };
 
 export const deleteSubject = (id: string): void => {
@@ -118,13 +127,14 @@ export const setLastStudyDate = (date: number): void => {
 };
 
 // Update Goal
-export const updateGoal = (updatedGoal: StudyGoal): void => {
+export const updateGoal = (updatedGoal: StudyGoal): StudyGoal => {
   const goals = getGoals();
   const updatedGoals = goals.map(goal => 
     goal.id === updatedGoal.id ? updatedGoal : goal
   );
   
   localStorage.setItem('studyGoals', JSON.stringify(updatedGoals));
+  return updatedGoal;
 };
 
 // Delete Goal
@@ -133,4 +143,17 @@ export const deleteGoal = (goalId: string): void => {
   const remainingGoals = goals.filter(goal => goal.id !== goalId);
   
   localStorage.setItem('studyGoals', JSON.stringify(remainingGoals));
+};
+
+// Study Sessions
+export const getSessions = (): StudySession[] => {
+  const sessions = localStorage.getItem('studySessions');
+  return sessions ? JSON.parse(sessions) : [];
+};
+
+export const addSession = (session: Omit<StudySession, 'id'>): StudySession => {
+  const newSession: StudySession = { ...session, id: uuidv4() };
+  const sessions = getSessions();
+  localStorage.setItem('studySessions', JSON.stringify([...sessions, newSession]));
+  return newSession;
 };
