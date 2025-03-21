@@ -6,79 +6,54 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { addGoal, getSubjects, Subject, StudyGoal, updateGoal } from '@/utils/storageUtils';
-import { toast } from 'sonner';
+import { addGoal, getSubjects, Subject } from '@/utils/storageUtils';
 
 interface AddGoalModalProps {
   isOpen: boolean;
   onClose: () => void;
   onGoalAdded: () => void;
-  editGoal: StudyGoal | null;
 }
 
 const AddGoalModal: React.FC<AddGoalModalProps> = ({
   isOpen,
   onClose,
   onGoalAdded,
-  editGoal,
 }) => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [targetHours, setTargetHours] = useState(5);
   const [isWeekly, setIsWeekly] = useState(true);
 
-  // Load subjects on modal open and handle editing
+  // Load subjects on modal open
   useEffect(() => {
     if (isOpen) {
       const availableSubjects = getSubjects();
       setSubjects(availableSubjects);
       
-      if (editGoal) {
-        // Set form values for editing
-        setSelectedSubject(editGoal.subjectId);
-        setTargetHours(editGoal.targetHours);
-        setIsWeekly(editGoal.weeklyTarget);
-      } else {
-        // Set defaults for new goal
-        if (availableSubjects.length > 0 && !selectedSubject) {
-          setSelectedSubject(availableSubjects[0].id);
-        }
-        setTargetHours(5);
-        setIsWeekly(true);
+      if (availableSubjects.length > 0 && !selectedSubject) {
+        setSelectedSubject(availableSubjects[0].id);
       }
     }
-  }, [isOpen, selectedSubject, editGoal]);
+  }, [isOpen, selectedSubject]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedSubject || targetHours <= 0) return;
     
-    if (editGoal) {
-      // Update existing goal
-      updateGoal({
-        id: editGoal.id,
-        subjectId: selectedSubject,
-        targetHours,
-        weeklyTarget: isWeekly,
-        completedMinutes: editGoal.completedMinutes,
-        createdAt: editGoal.createdAt,
-      });
-      toast.success("Goal updated successfully");
-    } else {
-      // Add new goal
-      addGoal({
-        subjectId: selectedSubject,
-        targetHours,
-        weeklyTarget: isWeekly,
-      });
-      toast.success("Goal added successfully");
-    }
+    // Add the new goal
+    addGoal({
+      subjectId: selectedSubject,
+      targetHours,
+      weeklyTarget: isWeekly,
+    });
     
     // Notify parent component
     onGoalAdded();
     
-    // Reset form and close
+    // Reset form
+    setTargetHours(5);
+    setIsWeekly(true);
     onClose();
   };
 
@@ -86,9 +61,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="glass-card border-white/10 sm:max-w-md animate-scale-in">
         <DialogHeader>
-          <DialogTitle className="text-xl font-light">
-            {editGoal ? 'Edit Study Goal' : 'Add Study Goal'}
-          </DialogTitle>
+          <DialogTitle className="text-xl font-light">Add Study Goal</DialogTitle>
         </DialogHeader>
         
         <form onSubmit={handleSubmit} className="space-y-4 py-2">
@@ -157,7 +130,7 @@ const AddGoalModal: React.FC<AddGoalModalProps> = ({
               className="bg-study-blue hover:bg-study-blue/90"
               disabled={!selectedSubject || targetHours <= 0}
             >
-              {editGoal ? 'Update Goal' : 'Add Goal'}
+              Add Goal
             </Button>
           </DialogFooter>
         </form>

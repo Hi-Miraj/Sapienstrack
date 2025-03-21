@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, PieChart, Pie, Cell } from 'recharts';
 import { ChartContainer, ChartTooltipContent } from '@/components/ui/chart';
-import { getSessions, getSubjectById, getSubjects, getStreak, getTotalStudyTime } from '@/utils/storageUtils';
+import { getSessionStats, getSessions, getSubjectById, getSubjects, getStreak, getTotalStudyTime } from '@/utils/storageUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ChevronUp, ChevronDown, X } from 'lucide-react';
 import { formatTimeHours } from '@/utils/timerUtils';

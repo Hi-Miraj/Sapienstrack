@@ -4,7 +4,6 @@ import { Plus, Pencil, Trash2 } from 'lucide-react';
 import { getSubjects, Subject, deleteSubject } from '@/utils/storageUtils';
 import AddSubjectModal from './AddSubjectModal';
 import { toast } from 'sonner';
-import FloatingEditButton from './FloatingEditButton';
 
 interface SubjectSelectionProps {
   selectedSubject: string | null;
@@ -58,14 +57,14 @@ const SubjectSelection: React.FC<SubjectSelectionProps> = ({
   };
 
   return (
-    <div className="w-full relative">
+    <div className="w-full">
       <h2 className="text-white/80 text-sm font-medium mb-3">Select Subject</h2>
       
       <div className="grid grid-cols-2 gap-3">
         {subjects.map((subject) => (
           <div 
             key={subject.id}
-            className="relative"
+            className="relative group"
           >
             <button
               onClick={() => onSelectSubject(subject.id)}
@@ -76,15 +75,15 @@ const SubjectSelection: React.FC<SubjectSelectionProps> = ({
               <span className="text-white font-medium">{subject.name}</span>
             </button>
             
-            {/* Edit and delete controls - always visible and better positioned */}
-            <div className="absolute right-1 top-1 flex space-x-1">
+            {/* Edit and delete controls that appear on hover */}
+            <div className="absolute right-1 top-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-1">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setEditingSubject(subject);
                   setIsAddModalOpen(true);
                 }}
-                className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white focus-transition"
+                className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
                 title="Edit subject"
               >
                 <Pencil size={14} />
@@ -94,7 +93,7 @@ const SubjectSelection: React.FC<SubjectSelectionProps> = ({
                   e.stopPropagation();
                   handleDeleteSubject(subject.id);
                 }}
-                className="p-1 rounded-full bg-white/20 hover:bg-white/30 text-white focus-transition"
+                className="p-1 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white focus-transition"
                 title="Delete subject"
               >
                 <Trash2 size={14} />
@@ -117,15 +116,6 @@ const SubjectSelection: React.FC<SubjectSelectionProps> = ({
           <span>Add Subject</span>
         </button>
       </div>
-
-      {/* Floating add button for quick access */}
-      <FloatingEditButton 
-        onClick={() => {
-          setEditingSubject(null);
-          setIsAddModalOpen(true);
-        }}
-        label="Add Subject"
-      />
 
       {/* Add/Edit subject modal */}
       <AddSubjectModal
